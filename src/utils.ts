@@ -9,7 +9,7 @@ export const setNotebookName = (map: Map<string, string>) => {
 
 export async function getChildDocs(block: BlockId) {
     let sqlCode = `select * from blocks where path regexp '.*/${block}/[0-9a-z\-]+\.sy' and type='d'
-    order by updated desc;`;
+    order by hpath desc;`;
     let childDocs = await api.sql(sqlCode);
     return childDocs;
 }

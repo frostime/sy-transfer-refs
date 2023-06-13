@@ -58,7 +58,7 @@ export default class PluginTransferRefs extends Plugin {
         let protype: HTMLElement = detail.blockElements[0];
         let blockId = protype.getAttribute('data-node-id');
         menu.addItem({
-            label: "转换引用",
+            label: "转移引用",
             icon: "iconTransfer",
             click: () => {
                 this.showTransferDialog(blockId);
@@ -70,7 +70,7 @@ export default class PluginTransferRefs extends Plugin {
         let blockId = detail.data.id;
         let menu: Menu = detail.menu;
         menu.addItem({
-            label: "转换引用",
+            label: "转移引用",
             icon: "iconTransfer",
             click: () => {
                 this.showTransferDialog(blockId);
@@ -80,7 +80,7 @@ export default class PluginTransferRefs extends Plugin {
 
     private showTransferDialog(blockId: BlockId) {
         let dialog = new Dialog({
-            title: "转换引用",
+            title: "转移引用",
             content: `<div id="pannel" class="fn__flex fn__flex-1"></div>`,
             width: "60%",
             height: "50%"

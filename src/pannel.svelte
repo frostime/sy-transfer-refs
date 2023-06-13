@@ -4,6 +4,11 @@
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
+    let refChoose: BlockId[];
+
+    $: {
+        console.log(refChoose);
+    }
 
     function clipStr(str: string, len: number) {
         if (str.length > len) {
@@ -34,7 +39,8 @@
      * 查询父节点和直接子节点
      */
     async function queryFamily() {
-        let children: Block[] | undefined = await getChildDocs(srcBlockID);
+        let srcBlock: Block = await api.getBlockByID(srcBlockID);
+        let children: Block[] | undefined = await getChildDocs(srcBlock.root_id);
         console.log(children);
         children = children ?? [];
         return children.sort((a, b) => {
@@ -65,7 +71,7 @@
                 {#each refBlockInfo as block (block.id)}
                     <div class="row">
                         <div class="cell-0">
-                            <input type="checkbox" name="" id="" />
+                            <input type="checkbox" value={block.id} bind:group={refChoose} />
                         </div>
                         <div class="cell">{block.id}</div>
                         <div class="cell">{block.notebook}</div>
@@ -86,7 +92,7 @@
         <div id="transBtn">
             <div>
                 <input
-                    class="b3-text-field fn__flex-center" value={dstChoose}
+                    class="b3-text-field fn__flex-center" value={dstChoose} placeholder="目标块ID"
                 />
             </div>
             <div>
