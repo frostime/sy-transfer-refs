@@ -1,7 +1,7 @@
 <script lang="ts">
     // import { sql } from "./api";
 
-    // export let srcBlockID: BlockId;
+    export let srcBlockID: BlockId;
     let dstChoose: string = "";
     // let refBlockInfo: any[] = [];
 
