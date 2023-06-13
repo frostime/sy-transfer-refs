@@ -140,6 +140,17 @@ export async function getHPathByID(id: BlockId): Promise<string> {
     return request(url, data);
 }
 
+export async function listDocsByPath(path, notebook: NotebookId, sort?: number, maxListLength?: number) {
+    let data = {
+        path: path,
+        notebook: notebook,
+        sort: sort,
+        maxListLength: maxListLength
+    };
+    let url = '/api/filetree/listDocsByPath';
+    return request(url, data);
+}
+
 // **************************************** Asset Files ****************************************
 export type ResUpload = {
     errFiles: string[];

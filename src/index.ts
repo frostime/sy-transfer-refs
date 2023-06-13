@@ -27,7 +27,7 @@ export default class PluginTransferRefs extends Plugin {
                     width: "1000px",
                     height: "50%"
                 });
-                let pannel = new Pannel({
+                new Pannel({
                     target: dialog.element.querySelector("#pannel")
                 });
             }

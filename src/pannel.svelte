@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { sql } from "./api";
-    import { notebookName } from "@/utils";
+    import * as api from "./api";
+    import { notebookName, getChildDocs } from "@/utils";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
@@ -16,7 +16,7 @@
     async function queryRefs() {
         let sqlQuery = `select * from blocks where id in (
         select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
-        let refBlocks: Block[] = await sql(sqlQuery);
+        let refBlocks: Block[] = await api.sql(sqlQuery);
         let refBlockInfo = [];
         for (let block of refBlocks) {
             refBlockInfo.push({
@@ -30,7 +30,20 @@
         return refBlockInfo;
     }
 
+    /**
+     * 查询父节点和直接子节点
+     */
+    async function queryFamily() {
+        let children: Block[] | undefined = await getChildDocs(srcBlockID);
+        console.log(children);
+        children = children ?? [];
+        return children.sort((a, b) => {
+            return a.hpath.localeCompare(b.hpath);
+        });
+    }
+
     let queryRefsPromise = queryRefs();
+    let queryFamilyPromise = queryFamily();
 
 </script>
 
@@ -87,18 +100,21 @@
 
         <div id="dstOptions">
             <h4>候选</h4>
-            <label>
+
+            {#await queryFamilyPromise}
+                <p>查询中...</p>
+            {:then children} 
+                {#each children as block (block.id)}
+                    <label>
+                        <input type="radio" bind:group={dstChoose} name="options" value={block.id}>
+                        {block.hpath.split("/").pop()}
+                    </label>
+                {/each}
+            {/await}
+            <!-- <label>
                 <input type="radio" bind:group={dstChoose} name="options" value="option1">
                 Option 1
-            </label>
-            <label>
-                <input type="radio" bind:group={dstChoose} name="options" value="option2">
-                Option 2
-            </label>
-            <label>
-                <input type="radio" bind:group={dstChoose} name="options" value="option3">
-                Option 3
-            </label>
+            </label> -->
         </div>
           
 
