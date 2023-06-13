@@ -1,57 +1,60 @@
 <script lang="ts">
-    // import { sql } from "./api";
+    import { sql } from "./api";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
-    // let refBlockInfo: any[] = [];
 
-    // async function queryRefs() {
-    //     let sqlQuery = `select * from blocks where id in (
-    //     select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
-    //     let refBlocks: Block[] = await sql(sqlQuery);
-    //     for (let block of refBlocks) {
-    //         refBlockInfo.push({
-    //             id: block.id,
-    //             notebook: block.box,
-    //             doc: block.doc,
-    //             content: block.content,
-    //         });
-    //     }
-    // }
+    async function queryRefs() {
+        let sqlQuery = `select * from blocks where id in (
+        select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
+        let refBlocks: Block[] = await sql(sqlQuery);
+        let refBlockInfo = [];
+        for (let block of refBlocks) {
+            refBlockInfo.push({
+                id: block.id,
+                notebook: block.box,
+                // doc: block.hpath.split("/").pop(),
+                doc: block.hpath,
+                content: block.content,
+            });
+        }
+        return refBlockInfo;
+    }
+
+    let queryRefsPromise = queryRefs();
 
 </script>
 
 <main id="main" class="fn__flex fn__flex-1">
     <section id="refs" class="fn__flex-1">
-        <div class="table">
-            <div class="row header">
-                <div class="cell-0">
-                    #
+        {#await queryRefsPromise}
+            <p>查询中...</p>
+        {:then refBlockInfo} 
+            <div class="table">
+                <div class="row header">
+                    <div class="cell-0">
+                        #
+                    </div>
+                    <div class="cell">ID</div>
+                    <div class="cell">笔记本</div>
+                    <div class="cell">文档</div>
+                    <div class="cell">内容</div>
                 </div>
-                <div class="cell">ID</div>
-                <div class="cell">笔记本</div>
-                <div class="cell">文档</div>
-                <div class="cell">内容</div>
+                {#each refBlockInfo as block (block.id)}
+                    <div class="row">
+                        <div class="cell-0">
+                            <input type="checkbox" name="" id="" />
+                        </div>
+                        <div class="cell">{block.id}</div>
+                        <div class="cell">{block.notebook}</div>
+                        <div class="cell">{block.doc}</div>
+                        <div class="cell">{block.content}</div>
+                    </div>
+                {/each}
             </div>
-            <div class="row">
-                <div class="cell-0">
-                    <input type="checkbox" name="" id="" />
-                </div>
-                <div class="cell">行1列1</div>
-                <div class="cell">行1列2</div>
-                <div class="cell">行1列3</div>
-                <div class="cell">行1列4</div>
-            </div>
-            <div class="row">
-                <div class="cell-0">
-                    <input type="checkbox" name="" id="" />
-                </div>
-                <div class="cell">行2列1</div>
-                <div class="cell">行2列2</div>
-                <div class="cell">行2列3</div>
-                <div class="cell">行2列4</div>
-            </div>
-        </div>
+        {:catch error}
+            <p style="color: red">找不到 {error.message}</p>
+        {/await}
     </section>
 
     <div class="layout__resize--lr layout__resize" />
