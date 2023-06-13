@@ -23,9 +23,6 @@
 
 <main id="main" class="fn__flex fn__flex-1">
     <section id="refs" class="fn__flex-1">
-        <div>
-            <p>yes</p>
-        </div>
         <div class="table">
             <div class="row header">
                 <div class="cell-0">
