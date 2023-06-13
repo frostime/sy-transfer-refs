@@ -1,8 +1,10 @@
 <script lang="ts">
+    let dstChoose: string = "";
+
 </script>
 
 <main id="main" class="fn__flex fn__flex-1">
-    <div id="refs" class="fn__flex-1">
+    <section id="refs" class="fn__flex-1">
         <div>
             <p>yes</p>
         </div>
@@ -35,16 +37,16 @@
                 <div class="cell">行2列4</div>
             </div>
         </div>
-    </div>
+    </section>
 
     <div class="layout__resize--lr layout__resize" />
 
-    <div id="dsts">
+    <section id="dsts">
 
         <div id="transBtn">
             <div>
                 <input
-                    class="b3-text-field fn__flex-center"
+                    class="b3-text-field fn__flex-center" value={dstChoose}
                 />
             </div>
             <div>
@@ -57,22 +59,23 @@
         </div>
 
         <div id="dstOptions">
-            <div>
-                <input type="radio" id="option1" name="options" value="option1">
-                <label for="option1">Option 1</label>
-            </div>
-            <div>
-                <input type="radio" id="option2" name="options" value="option2">
-                <label for="option2">Option 2</label>
-            </div>
-            <div>
-                <input type="radio" id="option3" name="options" value="option3">
-                <label for="option3">Option 3</label>
-            </div>
+            <h4>候选</h4>
+            <label>
+                <input type="radio" bind:group={dstChoose} name="options" value="option1">
+                Option 1
+            </label>
+            <label>
+                <input type="radio" bind:group={dstChoose} name="options" value="option2">
+                Option 2
+            </label>
+            <label>
+                <input type="radio" bind:group={dstChoose} name="options" value="option3">
+                Option 3
+            </label>
         </div>
           
 
-    </div>
+    </section>
 </main>
 
 <style lang="scss">
@@ -121,8 +124,9 @@
             >#dstOptions {
                 flex: 3;
                 overflow: auto;
-                >div {
-                    margin-bottom: 1rem;
+                >label {
+                    display: block;
+                    margin: 1rem;
                 }
             }
 
