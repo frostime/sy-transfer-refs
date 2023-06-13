@@ -1,14 +1,14 @@
 {
-  "name": "plugin-sample-vite-svelte",
+  "name": "sy-transfer-refs",
   "author": "frostime",
-  "url": "https://github.com/siyuan-note/plugin-sample-vite-svelte",
-  "version": "0.1.4",
+  "url": "https://github.com/frostime/sy-transfer-refs",
+  "version": "0.1.0",
   "minAppVersion": "2.9.0",
   "backends": ["windows", "linux", "darwin"],
   "frontends": ["desktop"],
   "displayName": {
-    "en_US": "Plugin sample with vite and svelte",
-    "zh_CN": "插件样例 vite + svelte 版"
+    "en_US": "Transfer ref links",
+    "zh_CN": "引用转移"
   },
   "description": {
     "en_US": "SiYuan plugin sample with vite and svelte",
