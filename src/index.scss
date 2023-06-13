@@ -1,16 +1,15 @@
 $table-border-color: var(--b3-theme-surface-lighter);
 
 .table {
-    display: flex;
-    flex-direction: column;
+    display: table;
     border-collapse: collapse;
     border: 1px solid $table-border-color;
 
     .row {
-        display: flex;
+        display: table-row;
 
         .cell {
-            flex: 1;
+            display: table-cell;
             padding: 10px;
             border: 1px solid $table-border-color;
             color: var(--b3-theme-on-background);
@@ -18,12 +17,12 @@ $table-border-color: var(--b3-theme-surface-lighter);
         }
         .cell-0 {
             @extend .cell;
-            flex: 0;
             width: 2rem;
         }
 
 
         &.header {
+            display: table-header-group;
             font-weight: bold;
             background-color: var(--b3-theme-background);
         }
