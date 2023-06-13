@@ -82,7 +82,7 @@ export default class PluginTransferRefs extends Plugin {
         let dialog = new Dialog({
             title: "转换引用",
             content: `<div id="pannel" class="fn__flex fn__flex-1"></div>`,
-            width: "1000px",
+            width: "60%",
             height: "50%"
         });
         new Pannel({

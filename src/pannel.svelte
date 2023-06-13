@@ -5,6 +5,14 @@
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
 
+    function clipStr(str: string, len: number) {
+        if (str.length > len) {
+            return str.slice(0, len) + "...";
+        } else {
+            return str;
+        }
+    }
+
     async function queryRefs() {
         let sqlQuery = `select * from blocks where id in (
         select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
@@ -49,7 +57,7 @@
                         <div class="cell">{block.id}</div>
                         <div class="cell">{block.notebook}</div>
                         <div class="cell">{block.doc}</div>
-                        <div class="cell">{block.content}</div>
+                        <div class="cell">{clipStr(block.content, 50)}</div>
                     </div>
                 {/each}
             </div>
