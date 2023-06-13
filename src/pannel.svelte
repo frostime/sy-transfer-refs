@@ -1,5 +1,23 @@
 <script lang="ts">
+    // import { sql } from "./api";
+
+    // export let srcBlockID: BlockId;
     let dstChoose: string = "";
+    // let refBlockInfo: any[] = [];
+
+    // async function queryRefs() {
+    //     let sqlQuery = `select * from blocks where id in (
+    //     select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
+    //     let refBlocks: Block[] = await sql(sqlQuery);
+    //     for (let block of refBlocks) {
+    //         refBlockInfo.push({
+    //             id: block.id,
+    //             notebook: block.box,
+    //             doc: block.doc,
+    //             content: block.content,
+    //         });
+    //     }
+    // }
 
 </script>
 

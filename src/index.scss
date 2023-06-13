@@ -14,10 +14,13 @@ $table-border-color: var(--b3-theme-surface-lighter);
             border: 1px solid $table-border-color;
             color: var(--b3-theme-on-background);
             box-sizing: border-box;
+            word-break: break-word;
+            min-width: 5em;
         }
         .cell-0 {
             @extend .cell;
             width: 2rem;
+            min-width: 1em;
         }
 
 
