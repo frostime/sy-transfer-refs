@@ -39,7 +39,40 @@
 
     <div class="layout__resize--lr layout__resize" />
 
-    <div id="dsts" class="fn__flex-1">yes</div>
+    <div id="dsts">
+
+        <div id="transBtn">
+            <div>
+                <input
+                    class="b3-text-field fn__flex-center"
+                />
+            </div>
+            <div>
+                <button
+                    class="b3-button b3-button--outline fn__flex-center"
+                >
+                    转移
+                </button>
+            </div>
+        </div>
+
+        <div id="dstOptions">
+            <div>
+                <input type="radio" id="option1" name="options" value="option1">
+                <label for="option1">Option 1</label>
+            </div>
+            <div>
+                <input type="radio" id="option2" name="options" value="option2">
+                <label for="option2">Option 2</label>
+            </div>
+            <div>
+                <input type="radio" id="option3" name="options" value="option3">
+                <label for="option3">Option 3</label>
+            </div>
+        </div>
+          
+
+    </div>
 </main>
 
 <style lang="scss">
@@ -59,12 +92,40 @@
 
         #dsts {
             flex: 1;
-            // display: flex;
-            // flex-direction: column;
-            overflow: auto;
+            display: flex;
+            flex-direction: column;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
             max-width: 400px;
+
+            >#transBtn {
+                flex: 1;
+                max-height: 3rem;
+                display: flex;
+
+                :nth-child(1) {
+                    flex: 3;
+                    margin-right: 2px;
+                    >input {
+                        width: 100%;
+                    }
+                }
+                :nth-child(2) {
+                    flex: 1;
+                    >button {
+                        width: 100%;
+                    }
+                }
+            }
+
+            >#dstOptions {
+                flex: 3;
+                overflow: auto;
+                >div {
+                    margin-bottom: 1rem;
+                }
+            }
+
         }
     }
 </style>
