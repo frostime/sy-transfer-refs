@@ -1,5 +1,6 @@
 <script lang="ts">
     import { sql } from "./api";
+    import { notebookName } from "@/utils";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
@@ -12,7 +13,7 @@
         for (let block of refBlocks) {
             refBlockInfo.push({
                 id: block.id,
-                notebook: block.box,
+                notebook: notebookName.get(block.box) ?? block.box,
                 // doc: block.hpath.split("/").pop(),
                 doc: block.hpath,
                 content: block.content,
