@@ -1,10 +1,17 @@
 import * as api from "./api";
+import zh_CN from "./i18n/zh_CN.json";
 
 export let notebookName: Map<string, string> = new Map();
 
 export const setNotebookName = (map: Map<string, string>) => {
     // replace the old map
     notebookName = map;
+}
+
+export let i18n: typeof zh_CN;
+
+export let setI18n = (i18nObj: any) => {
+    i18n = i18nObj;
 }
 
 export async function getChildDocs(block: BlockId) {

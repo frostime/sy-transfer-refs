@@ -1,7 +1,7 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
     import * as api from "./api";
-    import { notebookName, getChildDocs, isnot } from "@/utils";
+    import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
@@ -56,14 +56,14 @@
     async function transferRefs() {
         console.log(srcBlockID, dstBlockID, refChoose);
         if (refChoose.length === 0) {
-            showMessage("请选择需要转移的链接");
+            showMessage(i18n.msg.NoRefChoose);
             return;
         }
         //确认一下目标块存在
         let sql = `select * from blocks where id = "${dstBlockID}" limit 1`;
         let result: Block[] = await api.sql(sql);
         if (isnot(result)) {
-            showMessage(`目标块 ${dstBlockID} 不存在`);
+            showMessage(i18n.msg.NoDst.replace("${dstBlockID}", dstBlockID));
             return;
         }
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);

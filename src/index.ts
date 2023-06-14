@@ -6,7 +6,7 @@ import {
 import "@/index.scss";
 import Pannel from "@/pannel.svelte";
 import * as api from "@/api";
-import { setNotebookName } from "./utils";
+import { setNotebookName, setI18n } from "./utils";
 
 let blockGutterClickEvent: EventListener;
 let docGutterClickEvent: EventListener;
@@ -15,13 +15,13 @@ const SVG = `<symbol id="iconTransfer" viewBox="0 0 1024 1024" version="1.1" xml
 
 export default class PluginTransferRefs extends Plugin {
 
-
     async onload() {
         blockGutterClickEvent = (e) => this.onBlockGutterClicked(e);
         docGutterClickEvent = (e) => this.onDocGutterClicked(e);
         this.addIcons(SVG);
         this.eventBus.on("click-blockicon", blockGutterClickEvent);
         this.eventBus.on("click-editortitleicon", docGutterClickEvent);
+        setI18n(this.i18n);
         await this.queryNotebooks();
     }
 
@@ -45,7 +45,7 @@ export default class PluginTransferRefs extends Plugin {
         let protype: HTMLElement = detail.blockElements[0];
         let blockId = protype.getAttribute('data-node-id');
         menu.addItem({
-            label: "转移引用",
+            label: this.i18n.name,
             icon: "iconTransfer",
             click: () => {
                 this.showTransferDialog(blockId);
@@ -57,7 +57,7 @@ export default class PluginTransferRefs extends Plugin {
         let blockId = detail.data.id;
         let menu: Menu = detail.menu;
         menu.addItem({
-            label: "转移引用",
+            label: this.i18n.name,
             icon: "iconTransfer",
             click: () => {
                 this.showTransferDialog(blockId);
@@ -67,7 +67,7 @@ export default class PluginTransferRefs extends Plugin {
 
     private showTransferDialog(blockId: BlockId) {
         let dialog = new Dialog({
-            title: "转移引用",
+            title: this.i18n.name,
             content: `<div id="pannel" class="fn__flex fn__flex-1"></div>`,
             width: "60%",
             height: "50%"
