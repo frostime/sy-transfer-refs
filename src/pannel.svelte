@@ -81,10 +81,10 @@
             <div class="table">
                 <div class="row header">
                     <div class="cell-0">#</div>
-                    <div class="cell">ID</div>
-                    <div class="cell">笔记本</div>
-                    <div class="cell">文档</div>
-                    <div class="cell">内容</div>
+                    <div class="cell">{i18n.pannel.refs.table[0]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[1]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[2]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[3]}</div>
                 </div>
                 {#each refBlockInfo as block (block.id)}
                     <div class="row">
@@ -115,7 +115,7 @@
                 <input
                     class="b3-text-field fn__flex-center"
                     bind:value={dstBlockID}
-                    placeholder="目标块ID"
+                    placeholder={i18n.pannel.transBtn.placeholder}
                 />
             </div>
             <div>
@@ -123,13 +123,13 @@
                     class="b3-button b3-button--outline fn__flex-center"
                     on:click={transferRefs}
                 >
-                    转移
+                    {i18n.pannel.transBtn.btn}
                 </button>
             </div>
         </div>
 
         <div id="dstOptions">
-            <h4>候选</h4>
+            <h4>{i18n.pannel.dstOptions.candidate}</h4>
 
             {#await queryFamilyPromise}
                 <p>查询中...</p>

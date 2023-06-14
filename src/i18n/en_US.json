@@ -2,6 +2,24 @@
     "name": "Transfer refs",
     "msg": {
         "NoRefChoose": "Please choose the references to be transfered",
-        "NoDst": "Tareget block ${dstBlockID} not exists"
+        "NoDst": "Target block ${dstBlockID} not exists"
+    },
+    "pannel": {
+        "refs": {
+            "table": [
+                "ID",
+                "Box",
+                "Doc",
+                "Content"
+            ]
+        },
+        "transBtn": {
+            "placeholder": "Target Block ID",
+            "btn": "Trans to"
+        }
+        ,
+        "dstOptions": {
+            "candidate": "Candidates"
+        }
     }
 }

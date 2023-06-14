@@ -3,5 +3,22 @@
     "msg": {
         "NoRefChoose": "请选择需要转移的链接",
         "NoDst": "目标块 ${dstBlockID} 不存在"
+    },
+    "pannel": {
+        "refs": {
+            "table": [
+                "ID",
+                "笔记本",
+                "文档",
+                "内容"
+            ]
+        },
+        "transBtn": {
+            "placeholder": "目标块ID",
+            "btn": "转移到"
+        },
+        "dstOptions": {
+            "candidate": "候选"
+        }
     }
 }
