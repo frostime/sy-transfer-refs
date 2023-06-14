@@ -56,13 +56,14 @@
     async function transferRefs() {
         console.log(srcBlockID, dstBlockID, refChoose);
         if (refChoose.length === 0) {
-            alert("请选择需要转移的链接");
+            showMessage("请选择需要转移的链接");
             return;
         }
+        //确认一下目标块存在
         let sql = `select * from blocks where id = "${dstBlockID}" limit 1`;
         let result: Block[] = await api.sql(sql);
         if (isnot(result)) {
-            alert("目标块不存在");
+            showMessage(`目标块 ${dstBlockID} 不存在`);
             return;
         }
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
