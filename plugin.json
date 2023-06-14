@@ -4,15 +4,15 @@
   "url": "https://github.com/frostime/sy-transfer-refs",
   "version": "0.1.0",
   "minAppVersion": "2.9.0",
-  "backends": ["windows", "linux", "darwin"],
-  "frontends": ["desktop"],
+  "backends": ["all"],
+  "frontends": ["all"],
   "displayName": {
     "en_US": "Transfer ref links",
-    "zh_CN": "引用转移"
+    "zh_CN": "转移引用"
   },
   "description": {
-    "en_US": "SiYuan plugin sample with vite and svelte",
-    "zh_CN": "使用 vite 和 svelte 开发的思源插件样例"
+    "en_US": "Transfer your references in a more fine-grained way",
+    "zh_CN": "以更加细粒度的方式转移你的引用"
   },
   "readme": {
     "en_US": "README.md",

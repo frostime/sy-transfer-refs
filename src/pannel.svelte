@@ -1,7 +1,7 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
     import * as api from "./api";
-    import { notebookName, getChildDocs, isnot } from "@/utils";
+    import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
@@ -56,13 +56,14 @@
     async function transferRefs() {
         console.log(srcBlockID, dstBlockID, refChoose);
         if (refChoose.length === 0) {
-            alert("请选择需要转移的链接");
+            showMessage(i18n.msg.NoRefChoose);
             return;
         }
+        //确认一下目标块存在
         let sql = `select * from blocks where id = "${dstBlockID}" limit 1`;
         let result: Block[] = await api.sql(sql);
         if (isnot(result)) {
-            alert("目标块不存在");
+            showMessage(i18n.msg.NoDst.replace("${dstBlockID}", dstBlockID));
             return;
         }
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
@@ -80,10 +81,10 @@
             <div class="table">
                 <div class="row header">
                     <div class="cell-0">#</div>
-                    <div class="cell">ID</div>
-                    <div class="cell">笔记本</div>
-                    <div class="cell">文档</div>
-                    <div class="cell">内容</div>
+                    <div class="cell">{i18n.pannel.refs.table[0]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[1]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[2]}</div>
+                    <div class="cell">{i18n.pannel.refs.table[3]}</div>
                 </div>
                 {#each refBlockInfo as block (block.id)}
                     <div class="row">
@@ -114,7 +115,7 @@
                 <input
                     class="b3-text-field fn__flex-center"
                     bind:value={dstBlockID}
-                    placeholder="目标块ID"
+                    placeholder={i18n.pannel.transBtn.placeholder}
                 />
             </div>
             <div>
@@ -122,13 +123,13 @@
                     class="b3-button b3-button--outline fn__flex-center"
                     on:click={transferRefs}
                 >
-                    转移
+                    {i18n.pannel.transBtn.btn}
                 </button>
             </div>
         </div>
 
         <div id="dstOptions">
-            <h4>候选</h4>
+            <h4>{i18n.pannel.dstOptions.candidate}</h4>
 
             {#await queryFamilyPromise}
                 <p>查询中...</p>
