@@ -167,6 +167,14 @@
             overflow: auto;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
+            div.table {
+                //ID那一列, 一共 11 个字
+                .row>.cell:nth-child(2) {
+                    // word-break: unset;
+                    width: 12rem;
+                }
+            }
+
         }
 
         #dsts {
@@ -175,7 +183,7 @@
             flex-direction: column;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
-            max-width: 400px;
+            max-width: 15rem;
 
             > #transBtn {
                 flex: 1;
