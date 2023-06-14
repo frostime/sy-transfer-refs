@@ -140,6 +140,17 @@ export async function getHPathByID(id: BlockId): Promise<string> {
     return request(url, data);
 }
 
+export async function listDocsByPath(path, notebook: NotebookId, sort?: number, maxListLength?: number) {
+    let data = {
+        path: path,
+        notebook: notebook,
+        sort: sort,
+        maxListLength: maxListLength
+    };
+    let url = '/api/filetree/listDocsByPath';
+    return request(url, data);
+}
+
 // **************************************** Asset Files ****************************************
 export type ResUpload = {
     errFiles: string[];
@@ -238,6 +249,17 @@ export async function getChildBlocks(id: BlockId): Promise<ChildBlock[]> {
         id: id
     }
     let url = '/api/block/getChildBlocks';
+    return request(url, data);
+}
+
+
+export async function transferBlockRef(fromID: BlockId, toID: BlockId, refIDs: BlockId[]) {
+    let data = {
+        fromID: fromID,
+        toID: toID,
+        refIDs: refIDs
+    }
+    let url = '/api/block/transferBlockRef';
     return request(url, data);
 }
 

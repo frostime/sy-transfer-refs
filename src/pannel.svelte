@@ -1,72 +1,126 @@
 <script lang="ts">
-    // import { sql } from "./api";
+    import { showMessage } from "siyuan";
+    import * as api from "./api";
+    import { notebookName, getChildDocs, isnot } from "@/utils";
 
-    // export let srcBlockID: BlockId;
+    export let srcBlockID: BlockId;
     let dstChoose: string = "";
-    // let refBlockInfo: any[] = [];
+    let refChoose: BlockId[] = [];
+    let dstBlockID: BlockId = "";
+    $: dstBlockID = dstChoose;
 
-    // async function queryRefs() {
-    //     let sqlQuery = `select * from blocks where id in (
-    //     select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
-    //     let refBlocks: Block[] = await sql(sqlQuery);
-    //     for (let block of refBlocks) {
-    //         refBlockInfo.push({
-    //             id: block.id,
-    //             notebook: block.box,
-    //             doc: block.doc,
-    //             content: block.content,
-    //         });
-    //     }
-    // }
+    $: {
+        console.log(refChoose);
+    }
 
+    function clipStr(str: string, len: number) {
+        if (str.length > len) {
+            return str.slice(0, len) + "...";
+        } else {
+            return str;
+        }
+    }
+
+    async function queryRefs() {
+        let sqlQuery = `select * from blocks where id in (
+        select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
+        let refBlocks: Block[] = await api.sql(sqlQuery);
+        let refBlockInfo = [];
+        for (let block of refBlocks) {
+            refBlockInfo.push({
+                id: block.id,
+                notebook: notebookName.get(block.box) ?? block.box,
+                // doc: block.hpath.split("/").pop(),
+                doc: block.hpath,
+                content: block.content,
+            });
+        }
+        return refBlockInfo;
+    }
+
+    /**
+     * 查询父节点和直接子节点
+     */
+    async function queryFamily() {
+        let srcBlock: Block = await api.getBlockByID(srcBlockID);
+        let children: Block[] | undefined = await getChildDocs(
+            srcBlock.root_id
+        );
+        console.log(children);
+        children = children ?? [];
+        return children.sort((a, b) => {
+            return a.hpath.localeCompare(b.hpath);
+        });
+    }
+
+    async function transferRefs() {
+        console.log(srcBlockID, dstBlockID, refChoose);
+        if (refChoose.length === 0) {
+            alert("请选择需要转移的链接");
+            return;
+        }
+        let sql = `select * from blocks where id = "${dstBlockID}" limit 1`;
+        let result: Block[] = await api.sql(sql);
+        if (isnot(result)) {
+            alert("目标块不存在");
+            return;
+        }
+        api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
+    }
+
+    let queryRefsPromise = queryRefs();
+    let queryFamilyPromise = queryFamily();
 </script>
 
 <main id="main" class="fn__flex fn__flex-1">
     <section id="refs" class="fn__flex-1">
-        <div class="table">
-            <div class="row header">
-                <div class="cell-0">
-                    #
+        {#await queryRefsPromise}
+            <p>查询中...</p>
+        {:then refBlockInfo}
+            <div class="table">
+                <div class="row header">
+                    <div class="cell-0">#</div>
+                    <div class="cell">ID</div>
+                    <div class="cell">笔记本</div>
+                    <div class="cell">文档</div>
+                    <div class="cell">内容</div>
                 </div>
-                <div class="cell">ID</div>
-                <div class="cell">笔记本</div>
-                <div class="cell">文档</div>
-                <div class="cell">内容</div>
+                {#each refBlockInfo as block (block.id)}
+                    <div class="row">
+                        <div class="cell-0">
+                            <input
+                                type="checkbox"
+                                value={block.id}
+                                bind:group={refChoose}
+                            />
+                        </div>
+                        <div class="cell">{block.id}</div>
+                        <div class="cell">{block.notebook}</div>
+                        <div class="cell">{block.doc}</div>
+                        <div class="cell">{clipStr(block.content, 50)}</div>
+                    </div>
+                {/each}
             </div>
-            <div class="row">
-                <div class="cell-0">
-                    <input type="checkbox" name="" id="" />
-                </div>
-                <div class="cell">行1列1</div>
-                <div class="cell">行1列2</div>
-                <div class="cell">行1列3</div>
-                <div class="cell">行1列4</div>
-            </div>
-            <div class="row">
-                <div class="cell-0">
-                    <input type="checkbox" name="" id="" />
-                </div>
-                <div class="cell">行2列1</div>
-                <div class="cell">行2列2</div>
-                <div class="cell">行2列3</div>
-                <div class="cell">行2列4</div>
-            </div>
-        </div>
+        {:catch error}
+            <p style="color: red">找不到 {error.message}</p>
+        {/await}
     </section>
 
     <div class="layout__resize--lr layout__resize" />
 
     <section id="dsts">
-
         <div id="transBtn">
             <div>
                 <input
-                    class="b3-text-field fn__flex-center" value={dstChoose}
+                    class="b3-text-field fn__flex-center"
+                    bind:value={dstBlockID}
+                    placeholder="目标块ID"
                 />
             </div>
             <div>
                 <button
                     class="b3-button b3-button--outline fn__flex-center"
+                    on:click={transferRefs}
                 >
                     转移
                 </button>
@@ -75,21 +129,27 @@
 
         <div id="dstOptions">
             <h4>候选</h4>
-            <label>
+
+            {#await queryFamilyPromise}
+                <p>查询中...</p>
+            {:then children}
+                {#each children as block (block.id)}
+                    <label>
+                        <input
+                            type="radio"
+                            bind:group={dstChoose}
+                            name="options"
+                            value={block.id}
+                        />
+                        {block.hpath.split("/").pop()}
+                    </label>
+                {/each}
+            {/await}
+            <!-- <label>
                 <input type="radio" bind:group={dstChoose} name="options" value="option1">
                 Option 1
-            </label>
-            <label>
-                <input type="radio" bind:group={dstChoose} name="options" value="option2">
-                Option 2
-            </label>
-            <label>
-                <input type="radio" bind:group={dstChoose} name="options" value="option3">
-                Option 3
-            </label>
+            </label> -->
         </div>
-          
-
     </section>
 </main>
 
@@ -116,7 +176,7 @@
             border: 1px solid var(--border-color);
             max-width: 400px;
 
-            >#transBtn {
+            > #transBtn {
                 flex: 1;
                 max-height: 3rem;
                 display: flex;
@@ -124,27 +184,26 @@
                 :nth-child(1) {
                     flex: 3;
                     margin-right: 2px;
-                    >input {
+                    > input {
                         width: 100%;
                     }
                 }
                 :nth-child(2) {
                     flex: 1;
-                    >button {
+                    > button {
                         width: 100%;
                     }
                 }
             }
 
-            >#dstOptions {
+            > #dstOptions {
                 flex: 3;
                 overflow: auto;
-                >label {
+                > label {
                     display: block;
                     margin: 1rem;
                 }
             }
-
         }
     }
 </style>
