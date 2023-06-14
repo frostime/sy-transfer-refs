@@ -78,7 +78,7 @@
         {#await queryRefsPromise}
             <p>查询中...</p>
         {:then refBlockInfo}
-            <div class="table">
+            <div class="refs-table">
                 <div class="row header">
                     <div class="cell-0">#</div>
                     <div class="cell">{i18n.pannel.refs.table[0]}</div>
@@ -167,6 +167,14 @@
             overflow: auto;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
+            div.refs-table {
+                //ID那一列, 一共 11 个字
+                .row>.cell:nth-child(2) {
+                    // word-break: unset;
+                    width: 13rem;
+                }
+            }
+
         }
 
         #dsts {
@@ -175,7 +183,7 @@
             flex-direction: column;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
-            max-width: 400px;
+            max-width: 15rem;
 
             > #transBtn {
                 flex: 1;
