@@ -14,6 +14,18 @@ export async function getChildDocs(block: BlockId) {
     return childDocs;
 }
 
+export function isnot(value: any) {
+    if (value === undefined || value === null) {
+        return true;
+    } else if (value === false) {
+        return true;
+    } else if (typeof value === 'string' && value.trim() === '') {
+        return true;
+    } else if (value?.length === 0) {
+        return true;
+    }
+    return false;
+}
 /**
  * 获取文档相关信息：父文档、同级文档、子文档
  */

@@ -1,10 +1,13 @@
 <script lang="ts">
+    import { showMessage } from "siyuan";
     import * as api from "./api";
-    import { notebookName, getChildDocs } from "@/utils";
+    import { notebookName, getChildDocs, isnot } from "@/utils";
 
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
-    let refChoose: BlockId[];
+    let refChoose: BlockId[] = [];
+    let dstBlockID: BlockId = "";
+    $: dstBlockID = dstChoose;
 
     $: {
         console.log(refChoose);
@@ -40,7 +43,9 @@
      */
     async function queryFamily() {
         let srcBlock: Block = await api.getBlockByID(srcBlockID);
-        let children: Block[] | undefined = await getChildDocs(srcBlock.root_id);
+        let children: Block[] | undefined = await getChildDocs(
+            srcBlock.root_id
+        );
         console.log(children);
         children = children ?? [];
         return children.sort((a, b) => {
@@ -48,21 +53,33 @@
         });
     }
 
+    async function transferRefs() {
+        console.log(srcBlockID, dstBlockID, refChoose);
+        if (refChoose.length === 0) {
+            alert("请选择需要转移的链接");
+            return;
+        }
+        let sql = `select * from blocks where id = "${dstBlockID}" limit 1`;
+        let result: Block[] = await api.sql(sql);
+        if (isnot(result)) {
+            alert("目标块不存在");
+            return;
+        }
+        api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
+    }
+
     let queryRefsPromise = queryRefs();
     let queryFamilyPromise = queryFamily();
-
 </script>
 
 <main id="main" class="fn__flex fn__flex-1">
     <section id="refs" class="fn__flex-1">
         {#await queryRefsPromise}
             <p>查询中...</p>
-        {:then refBlockInfo} 
+        {:then refBlockInfo}
             <div class="table">
                 <div class="row header">
-                    <div class="cell-0">
-                        #
-                    </div>
+                    <div class="cell-0">#</div>
                     <div class="cell">ID</div>
                     <div class="cell">笔记本</div>
                     <div class="cell">文档</div>
@@ -71,7 +88,11 @@
                 {#each refBlockInfo as block (block.id)}
                     <div class="row">
                         <div class="cell-0">
-                            <input type="checkbox" value={block.id} bind:group={refChoose} />
+                            <input
+                                type="checkbox"
+                                value={block.id}
+                                bind:group={refChoose}
+                            />
                         </div>
                         <div class="cell">{block.id}</div>
                         <div class="cell">{block.notebook}</div>
@@ -88,16 +109,18 @@
     <div class="layout__resize--lr layout__resize" />
 
     <section id="dsts">
-
         <div id="transBtn">
             <div>
                 <input
-                    class="b3-text-field fn__flex-center" value={dstChoose} placeholder="目标块ID"
+                    class="b3-text-field fn__flex-center"
+                    bind:value={dstBlockID}
+                    placeholder="目标块ID"
                 />
             </div>
             <div>
                 <button
                     class="b3-button b3-button--outline fn__flex-center"
+                    on:click={transferRefs}
                 >
                     转移
                 </button>
@@ -109,10 +132,15 @@
 
             {#await queryFamilyPromise}
                 <p>查询中...</p>
-            {:then children} 
+            {:then children}
                 {#each children as block (block.id)}
                     <label>
-                        <input type="radio" bind:group={dstChoose} name="options" value={block.id}>
+                        <input
+                            type="radio"
+                            bind:group={dstChoose}
+                            name="options"
+                            value={block.id}
+                        />
                         {block.hpath.split("/").pop()}
                     </label>
                 {/each}
@@ -122,8 +150,6 @@
                 Option 1
             </label> -->
         </div>
-          
-
     </section>
 </main>
 
@@ -150,7 +176,7 @@
             border: 1px solid var(--border-color);
             max-width: 400px;
 
-            >#transBtn {
+            > #transBtn {
                 flex: 1;
                 max-height: 3rem;
                 display: flex;
@@ -158,27 +184,26 @@
                 :nth-child(1) {
                     flex: 3;
                     margin-right: 2px;
-                    >input {
+                    > input {
                         width: 100%;
                     }
                 }
                 :nth-child(2) {
                     flex: 1;
-                    >button {
+                    > button {
                         width: 100%;
                     }
                 }
             }
 
-            >#dstOptions {
+            > #dstOptions {
                 flex: 3;
                 overflow: auto;
-                >label {
+                > label {
                     display: block;
                     margin: 1rem;
                 }
             }
-
         }
     }
 </style>
