@@ -75,6 +75,7 @@ export default class PluginTransferRefs extends Plugin {
         new Pannel({
             target: dialog.element.querySelector("#pannel"),
             props: {
+                plugin: this,
                 srcBlockID: blockId
             }
         });

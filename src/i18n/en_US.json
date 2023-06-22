@@ -7,7 +7,7 @@
     "pannel": {
         "refs": {
             "table": [
-                "ID",
+                "Type",
                 "Box",
                 "Doc",
                 "Content"
@@ -21,5 +21,19 @@
         "dstOptions": {
             "candidate": "Candidates"
         }
+    },
+    "btype": {
+        "d": "Doc",
+        "h": "Header",
+        "l": "List",
+        "i": "List Item",
+        "c": "Code",
+        "m": "Math",
+        "t": "Table",
+        "b": "Quoate",
+        "s": "Super",
+        "p": "Paragraph",
+        "html": "HTML",
+        "query_embed": "Embed"
     }
 }

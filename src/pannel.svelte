@@ -1,16 +1,41 @@
 <script lang="ts">
-    import { showMessage } from "siyuan";
+    import { Plugin, showMessage } from "siyuan";
     import * as api from "./api";
     import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
 
+    export let plugin: Plugin;
     export let srcBlockID: BlockId;
+
+    let refBlockInfo: any[] = [];
+    let checkboxTitle: HTMLInputElement;
+
     let dstChoose: string = "";
     let refChoose: BlockId[] = [];
     let dstBlockID: BlockId = "";
     $: dstBlockID = dstChoose;
 
-    $: {
-        console.log(refChoose);
+    function clickCheckboxBlock() {
+        if (checkboxTitle) {
+            if (refChoose.length === 0) {
+                checkboxTitle.checked = false;
+                checkboxTitle.indeterminate = false;
+            } else if (refChoose.length === refBlockInfo.length) {
+                checkboxTitle.checked = true;
+                checkboxTitle.indeterminate = false;
+            } else {
+                checkboxTitle.checked = false;
+                checkboxTitle.indeterminate = true;
+            }
+        }
+    }
+
+    function clickCheckboxTitle() {
+        let checked = checkboxTitle.checked;
+        if (checked) {
+            refChoose = refBlockInfo.map((block) => block.id);
+        } else {
+            refChoose = [];
+        }
     }
 
     function clipStr(str: string, len: number) {
@@ -25,10 +50,11 @@
         let sqlQuery = `select * from blocks where id in (
         select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
         let refBlocks: Block[] = await api.sql(sqlQuery);
-        let refBlockInfo = [];
+        refBlockInfo = [];
         for (let block of refBlocks) {
             refBlockInfo.push({
                 id: block.id,
+                type: block.type,
                 notebook: notebookName.get(block.box) ?? block.box,
                 // doc: block.hpath.split("/").pop(),
                 doc: block.hpath,
@@ -54,7 +80,7 @@
     }
 
     async function transferRefs() {
-        console.log(srcBlockID, dstBlockID, refChoose);
+        // console.log(srcBlockID, dstBlockID, refChoose);
         if (refChoose.length === 0) {
             showMessage(i18n.msg.NoRefChoose);
             return;
@@ -69,6 +95,26 @@
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
     }
 
+    function showSrcBlock(blockId: BlockId, event: MouseEvent) {
+        event.stopPropagation();
+        console.log(event);
+        plugin.addFloatLayer({
+            ids: [blockId],
+            x: event.clientX,
+            y: event.clientY,
+        });
+        //@ts-ignore
+        let blockPanels = window.siyuan.blockPanels;
+        let panel = blockPanels[blockPanels.length - 1];
+        let ele = panel.element;
+        ele.style.zIndex = "999";
+    }
+
+    const type2text = (btype: string) => {
+        let text = i18n.btype?.[btype];
+        return text ?? btype;
+    };
+
     let queryRefsPromise = queryRefs();
     let queryFamilyPromise = queryFamily();
 </script>
@@ -80,7 +126,9 @@
         {:then refBlockInfo}
             <div class="refs-table">
                 <div class="row header">
-                    <div class="cell-0">#</div>
+                    <div class="cell-0">
+                        <input type="checkbox" bind:this={checkboxTitle} on:change={clickCheckboxTitle}/>
+                    </div>
                     <div class="cell">{i18n.pannel.refs.table[0]}</div>
                     <div class="cell">{i18n.pannel.refs.table[1]}</div>
                     <div class="cell">{i18n.pannel.refs.table[2]}</div>
@@ -93,9 +141,22 @@
                                 type="checkbox"
                                 value={block.id}
                                 bind:group={refChoose}
+                                on:change={clickCheckboxBlock}
                             />
                         </div>
-                        <div class="cell">{block.id}</div>
+                        <div
+                            class="cell b3-tooltips b3-tooltips__n"
+                            aria-label={block.id}
+                        >
+                            <span
+                                on:click={(event) => {
+                                    showSrcBlock(block.id, event);
+                                }}
+                                on:keydown={() => {}}
+                            >
+                                {type2text(block.type)}
+                            </span>
+                        </div>
                         <div class="cell">{block.notebook}</div>
                         <div class="cell">{block.doc}</div>
                         <div class="cell">{clipStr(block.content, 50)}</div>
@@ -168,13 +229,18 @@
             padding: 0.5rem;
             border: 1px solid var(--border-color);
             div.refs-table {
-                //ID那一列, 一共 11 个字
-                .row>.cell:nth-child(2) {
-                    // word-break: unset;
-                    width: 13rem;
+                .row > .cell:nth-child(2) {
+                    text-align: center;
+                    > span {
+                        color: var(--b3-protyle-inline-link-color);
+                        border-bottom: 1px solid
+                            var(--b3-protyle-inline-link-color);
+                    }
+                }
+                .row > .cell:nth-child(3) {
+                    text-align: center;
                 }
             }
-
         }
 
         #dsts {
