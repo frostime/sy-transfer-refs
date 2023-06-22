@@ -5,13 +5,37 @@
 
     export let plugin: Plugin;
     export let srcBlockID: BlockId;
+
+    let refBlockInfo: any[] = [];
+    let checkboxTitle: HTMLInputElement;
+
     let dstChoose: string = "";
     let refChoose: BlockId[] = [];
     let dstBlockID: BlockId = "";
     $: dstBlockID = dstChoose;
 
-    $: {
-        console.log(refChoose);
+    function clickCheckboxBlock() {
+        if (checkboxTitle) {
+            if (refChoose.length === 0) {
+                checkboxTitle.checked = false;
+                checkboxTitle.indeterminate = false;
+            } else if (refChoose.length === refBlockInfo.length) {
+                checkboxTitle.checked = true;
+                checkboxTitle.indeterminate = false;
+            } else {
+                checkboxTitle.checked = false;
+                checkboxTitle.indeterminate = true;
+            }
+        }
+    }
+
+    function clickCheckboxTitle() {
+        let checked = checkboxTitle.checked;
+        if (checked) {
+            refChoose = refBlockInfo.map((block) => block.id);
+        } else {
+            refChoose = [];
+        }
     }
 
     function clipStr(str: string, len: number) {
@@ -26,7 +50,7 @@
         let sqlQuery = `select * from blocks where id in (
         select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
         let refBlocks: Block[] = await api.sql(sqlQuery);
-        let refBlockInfo = [];
+        refBlockInfo = [];
         for (let block of refBlocks) {
             refBlockInfo.push({
                 id: block.id,
@@ -73,11 +97,11 @@
 
     function showSrcBlock(blockId: BlockId, event: MouseEvent) {
         event.stopPropagation();
-        console.log(event)
+        console.log(event);
         plugin.addFloatLayer({
             ids: [blockId],
             x: event.clientX,
-            y: event.clientY
+            y: event.clientY,
         });
         //@ts-ignore
         let blockPanels = window.siyuan.blockPanels;
@@ -102,7 +126,9 @@
         {:then refBlockInfo}
             <div class="refs-table">
                 <div class="row header">
-                    <div class="cell-0">#</div>
+                    <div class="cell-0">
+                        <input type="checkbox" bind:this={checkboxTitle} on:change={clickCheckboxTitle}/>
+                    </div>
                     <div class="cell">{i18n.pannel.refs.table[0]}</div>
                     <div class="cell">{i18n.pannel.refs.table[1]}</div>
                     <div class="cell">{i18n.pannel.refs.table[2]}</div>
@@ -115,6 +141,7 @@
                                 type="checkbox"
                                 value={block.id}
                                 bind:group={refChoose}
+                                on:change={clickCheckboxBlock}
                             />
                         </div>
                         <div
