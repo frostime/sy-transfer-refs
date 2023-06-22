@@ -145,7 +145,7 @@
                             />
                         </div>
                         <div
-                            class="cell b3-tooltips b3-tooltips__n"
+                            class="cell b3-tooltips b3-tooltips__n blockType"
                             aria-label={block.id}
                         >
                             <span
@@ -229,12 +229,15 @@
             padding: 0.5rem;
             border: 1px solid var(--border-color);
             div.refs-table {
-                .row > .cell:nth-child(2) {
+                .row > .cell.blockType {
                     text-align: center;
                     > span {
                         color: var(--b3-protyle-inline-link-color);
-                        border-bottom: 1px solid
-                            var(--b3-protyle-inline-link-color);
+                        border-bottom: 1px solid var(--b3-protyle-inline-link-color);
+
+                        &:hover {
+                            text-shadow: 0 0 10px var(--b3-protyle-inline-link-color);
+                        }
                     }
                 }
                 .row > .cell:nth-child(3) {
