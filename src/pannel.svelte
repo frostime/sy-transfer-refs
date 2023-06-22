@@ -29,6 +29,7 @@
         for (let block of refBlocks) {
             refBlockInfo.push({
                 id: block.id,
+                type: block.type,
                 notebook: notebookName.get(block.box) ?? block.box,
                 // doc: block.hpath.split("/").pop(),
                 doc: block.hpath,
@@ -69,6 +70,11 @@
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
     }
 
+    const type2text = (btype: string) => {
+        let text = i18n.btype?.[btype];
+        return text ?? btype;
+    }
+
     let queryRefsPromise = queryRefs();
     let queryFamilyPromise = queryFamily();
 </script>
@@ -95,7 +101,12 @@
                                 bind:group={refChoose}
                             />
                         </div>
-                        <div class="cell">{block.id}</div>
+                        <div
+                            class="cell b3-tooltips b3-tooltips__n"
+                            aria-label={block.id}
+                        >
+                            <span>{type2text(block.type)}</span>
+                        </div>
                         <div class="cell">{block.notebook}</div>
                         <div class="cell">{block.doc}</div>
                         <div class="cell">{clipStr(block.content, 50)}</div>
@@ -167,14 +178,13 @@
             overflow: auto;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
-            div.refs-table {
-                //ID那一列, 一共 11 个字
-                .row>.cell:nth-child(2) {
-                    // word-break: unset;
-                    width: 13rem;
-                }
-            }
-
+            // div.refs-table {
+            //     //ID那一列, 一共 11 个字
+            //     .row > .cell:nth-child(2) {
+            //         // word-break: unset;
+            //         // width: 13rem;
+            //     }
+            // }
         }
 
         #dsts {
