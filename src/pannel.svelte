@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { showMessage } from "siyuan";
+    import { Plugin, showMessage } from "siyuan";
     import * as api from "./api";
     import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
 
+    export let plugin: Plugin;
     export let srcBlockID: BlockId;
     let dstChoose: string = "";
     let refChoose: BlockId[] = [];
@@ -55,7 +56,7 @@
     }
 
     async function transferRefs() {
-        console.log(srcBlockID, dstBlockID, refChoose);
+        // console.log(srcBlockID, dstBlockID, refChoose);
         if (refChoose.length === 0) {
             showMessage(i18n.msg.NoRefChoose);
             return;
@@ -70,10 +71,25 @@
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
     }
 
+    function showSrcBlock(blockId: BlockId, event: MouseEvent) {
+        event.stopPropagation();
+        console.log(event)
+        plugin.addFloatLayer({
+            ids: [blockId],
+            x: event.clientX,
+            y: event.clientY
+        });
+        //@ts-ignore
+        let blockPanels = window.siyuan.blockPanels;
+        let panel = blockPanels[blockPanels.length - 1];
+        let ele = panel.element;
+        ele.style.zIndex = "999";
+    }
+
     const type2text = (btype: string) => {
         let text = i18n.btype?.[btype];
         return text ?? btype;
-    }
+    };
 
     let queryRefsPromise = queryRefs();
     let queryFamilyPromise = queryFamily();
@@ -105,7 +121,14 @@
                             class="cell b3-tooltips b3-tooltips__n"
                             aria-label={block.id}
                         >
-                            <span>{type2text(block.type)}</span>
+                            <span
+                                on:click={(event) => {
+                                    showSrcBlock(block.id, event);
+                                }}
+                                on:keydown={() => {}}
+                            >
+                                {type2text(block.type)}
+                            </span>
                         </div>
                         <div class="cell">{block.notebook}</div>
                         <div class="cell">{block.doc}</div>
@@ -179,12 +202,12 @@
             padding: 0.5rem;
             border: 1px solid var(--border-color);
             div.refs-table {
-
                 .row > .cell:nth-child(2) {
                     text-align: center;
-                    >span {
+                    > span {
                         color: var(--b3-protyle-inline-link-color);
-                        border-bottom: 1px solid var(--b3-protyle-inline-link-color);
+                        border-bottom: 1px solid
+                            var(--b3-protyle-inline-link-color);
                     }
                 }
                 .row > .cell:nth-child(3) {
