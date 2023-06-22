@@ -10,7 +10,7 @@ $table-border-color: var(--b3-theme-surface-light);
 
         .cell {
             display: table-cell;
-            padding: 10px 3px;
+            padding: 10px 5px;
             border: 1px solid $table-border-color;
             color: var(--b3-theme-on-background);
             box-sizing: border-box;

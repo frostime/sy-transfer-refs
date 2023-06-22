@@ -178,13 +178,19 @@
             overflow: auto;
             padding: 0.5rem;
             border: 1px solid var(--border-color);
-            // div.refs-table {
-            //     //ID那一列, 一共 11 个字
-            //     .row > .cell:nth-child(2) {
-            //         // word-break: unset;
-            //         // width: 13rem;
-            //     }
-            // }
+            div.refs-table {
+
+                .row > .cell:nth-child(2) {
+                    text-align: center;
+                    >span {
+                        color: var(--b3-protyle-inline-link-color);
+                        border-bottom: 1px solid var(--b3-protyle-inline-link-color);
+                    }
+                }
+                .row > .cell:nth-child(3) {
+                    text-align: center;
+                }
+            }
         }
 
         #dsts {
