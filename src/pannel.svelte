@@ -69,14 +69,27 @@
      */
     async function queryFamily() {
         let srcBlock: Block = await api.getBlockByID(srcBlockID);
+        let path = srcBlock.path.slice(1);
+        let pathParts = path.split("/");
+        let parentId: BlockId = null;
+        console.log(pathParts);
+        if (pathParts.length > 1) {
+            parentId = pathParts[pathParts.length - 2];
+            console.log(parentId);
+        }
+
         let children: Block[] | undefined = await getChildDocs(
             srcBlock.root_id
         );
-        console.log(children);
+        // console.log(children);
         children = children ?? [];
-        return children.sort((a, b) => {
+        let candidates = children.sort((a, b) => {
             return a.hpath.localeCompare(b.hpath);
         });
+        if (parentId != null) {
+            candidates.unshift(await api.getBlockByID(parentId));
+        }
+        return candidates;
     }
 
     async function transferRefs() {
