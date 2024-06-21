@@ -1,7 +1,7 @@
 <script lang="ts">
     import { showMessage } from "siyuan";
     import * as api from "./api";
-    import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
+    import { notebookName, getChildDocs, isnot, i18n, fb2p } from "@/utils";
 
     // export let plugin: Plugin;
     export let srcBlockID: BlockId;
@@ -46,10 +46,12 @@
         }
     }
 
+    let blockParentMaps = {};
     async function queryRefs() {
         let sqlQuery = `select * from blocks where id in (
         select block_id from refs where def_block_id = '${srcBlockID}') order by updated desc`;
         let refBlocks: Block[] = await api.sql(sqlQuery);
+        blockParentMaps = await fb2p(refBlocks.map(b => b.id));
         refBlockInfo = [];
         for (let block of refBlocks) {
             refBlockInfo.push({
@@ -159,7 +161,7 @@
                         </div>
                         <div
                             class="cell b3-tooltips b3-tooltips__n blockType popover__block"
-                            data-id="{block.id}"
+                            data-id="{blockParentMaps[block.id] ?? block.id}"
                             aria-label={block.id}
                         >
                             <span>
