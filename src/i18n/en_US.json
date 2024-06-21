@@ -35,5 +35,6 @@
         "p": "Paragraph",
         "html": "HTML",
         "query_embed": "Embed"
-    }
+    },
+    "querying": "Querying..."
 }

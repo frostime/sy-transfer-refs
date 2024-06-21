@@ -2,8 +2,8 @@
   "name": "sy-transfer-refs",
   "author": "frostime",
   "url": "https://github.com/frostime/sy-transfer-refs",
-  "version": "0.2.1",
-  "minAppVersion": "2.9.0",
+  "version": "0.3.0",
+  "minAppVersion": "3.0.10",
   "backends": ["all"],
   "frontends": ["all"],
   "displayName": {

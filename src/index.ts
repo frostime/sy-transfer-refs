@@ -1,3 +1,11 @@
+/*
+ * Copyright (c) 2024 by frostime. All Rights Reserved.
+ * @Author       : frostime
+ * @Date         : 2023-06-23 01:32:44
+ * @FilePath     : /src/index.ts
+ * @LastEditTime : 2024-06-21 17:12:37
+ * @Description  : 
+ */
 import {
     Plugin,
     Dialog,
@@ -75,7 +83,6 @@ export default class PluginTransferRefs extends Plugin {
         new Pannel({
             target: dialog.element.querySelector("#pannel"),
             props: {
-                plugin: this,
                 srcBlockID: blockId
             }
         });

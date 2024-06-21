@@ -1,9 +1,9 @@
 <script lang="ts">
-    import { Plugin, showMessage } from "siyuan";
+    import { showMessage } from "siyuan";
     import * as api from "./api";
     import { notebookName, getChildDocs, isnot, i18n } from "@/utils";
 
-    export let plugin: Plugin;
+    // export let plugin: Plugin;
     export let srcBlockID: BlockId;
 
     let refBlockInfo: any[] = [];
@@ -108,20 +108,20 @@
         api.transferBlockRef(srcBlockID, dstBlockID, refChoose);
     }
 
-    function showSrcBlock(blockId: BlockId, event: MouseEvent) {
-        event.stopPropagation();
-        console.log(event);
-        plugin.addFloatLayer({
-            ids: [blockId],
-            x: event.clientX,
-            y: event.clientY,
-        });
-        //@ts-ignore
-        let blockPanels = window.siyuan.blockPanels;
-        let panel = blockPanels[blockPanels.length - 1];
-        let ele = panel.element;
-        ele.style.zIndex = "999";
-    }
+    // function showSrcBlock(blockId: BlockId, event: MouseEvent) {
+    //     event.stopPropagation();
+    //     console.log(event);
+    //     plugin.addFloatLayer({
+    //         ids: [blockId],
+    //         x: event.clientX,
+    //         y: event.clientY,
+    //     });
+    //     //@ts-ignore
+    //     let blockPanels = window.siyuan.blockPanels;
+    //     let panel = blockPanels[blockPanels.length - 1];
+    //     let ele = panel.element;
+    //     ele.style.zIndex = "999";
+    // }
 
     const type2text = (btype: string) => {
         let text = i18n.btype?.[btype];
@@ -135,7 +135,7 @@
 <main id="main" class="fn__flex fn__flex-1">
     <section id="refs" class="fn__flex-1">
         {#await queryRefsPromise}
-            <p>查询中...</p>
+            <p>{i18n.querying}</p>
         {:then refBlockInfo}
             <div class="refs-table">
                 <div class="row header">
@@ -158,15 +158,11 @@
                             />
                         </div>
                         <div
-                            class="cell b3-tooltips b3-tooltips__n blockType"
+                            class="cell b3-tooltips b3-tooltips__n blockType popover__block"
+                            data-id="{block.id}"
                             aria-label={block.id}
                         >
-                            <span
-                                on:click={(event) => {
-                                    showSrcBlock(block.id, event);
-                                }}
-                                on:keydown={() => {}}
-                            >
+                            <span>
                                 {type2text(block.type)}
                             </span>
                         </div>
@@ -177,7 +173,7 @@
                 {/each}
             </div>
         {:catch error}
-            <p style="color: red">找不到 {error.message}</p>
+            <p style="color: red">Error: {error.message}</p>
         {/await}
     </section>
 
@@ -206,7 +202,7 @@
             <h4>{i18n.pannel.dstOptions.candidate}</h4>
 
             {#await queryFamilyPromise}
-                <p>查询中...</p>
+                <p>{i18n.querying}</p>
             {:then children}
                 {#each children as block (block.id)}
                     <label>
@@ -243,7 +239,8 @@
             border: 1px solid var(--border-color);
             div.refs-table {
                 .row > .cell.blockType {
-                    text-align: center;
+                    // text-align: center;
+                    text-align: left;
                     > span {
                         color: var(--b3-protyle-inline-link-color);
                         border-bottom: 1px solid var(--b3-protyle-inline-link-color);

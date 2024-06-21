@@ -34,5 +34,6 @@
         "p": "段落块",
         "html": "HTML块",
         "query_embed": "嵌入块"
-    }
+    },
+    "querying": "查询中..."
 }
